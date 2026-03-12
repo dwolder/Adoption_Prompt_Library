@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../api/client'
 import PromptForm from '../components/PromptForm'
@@ -8,7 +8,12 @@ export default function SubmitPrompt() {
   const promptTextFromState = location.state?.promptText ?? ''
   const [submitLoading, setSubmitLoading] = useState(false)
   const [error, setError] = useState('')
+  const [productOptions, setProductOptions] = useState([])
   const navigate = useNavigate()
+
+  useEffect(() => {
+    api.getProducts().then(setProductOptions).catch(() => setProductOptions([]))
+  }, [])
 
   async function handleSubmit(formData) {
     setSubmitLoading(true)
@@ -31,7 +36,12 @@ export default function SubmitPrompt() {
           {error}
         </div>
       )}
-      <PromptForm onSubmit={handleSubmit} loading={submitLoading} initialText={promptTextFromState} />
+      <PromptForm
+        onSubmit={handleSubmit}
+        loading={submitLoading}
+        initialText={promptTextFromState}
+        productOptions={productOptions}
+      />
     </div>
   )
 }

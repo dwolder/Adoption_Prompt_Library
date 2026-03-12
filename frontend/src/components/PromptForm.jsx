@@ -8,7 +8,7 @@ const CATEGORIES = [
   'Product Name/General',
 ]
 
-export default function PromptForm({ onSubmit, loading, initialText = '' }) {
+export default function PromptForm({ onSubmit, loading, initialText = '', productOptions = [] }) {
   const [text, setText] = useState(initialText)
   const [category, setCategory] = useState(CATEGORIES[0])
   const [productContext, setProductContext] = useState('')
@@ -70,11 +70,17 @@ export default function PromptForm({ onSubmit, loading, initialText = '' }) {
           <input
             id="product"
             type="text"
+            list="product-list"
             value={productContext}
             onChange={(e) => setProductContext(e.target.value)}
-            placeholder="Optional"
+            placeholder="Select existing or type a new product name"
             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
+          <datalist id="product-list">
+            {productOptions.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
         </div>
         <button
           type="submit"
