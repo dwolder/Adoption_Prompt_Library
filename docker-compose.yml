@@ -1,0 +1,26 @@
+# Run PostgreSQL in a container so the database is contained with this project.
+# Start: docker compose up -d
+# Stop:  docker compose down
+# Data is kept in a named volume (prompt_library_pgdata) so it persists across restarts.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: prompt_library_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-promptlib}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-promptlib}
+      POSTGRES_DB: ${POSTGRES_DB:-prompt_library}
+    ports:
+      - "54320:5432"
+    volumes:
+      - prompt_library_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-promptlib} -d ${POSTGRES_DB:-prompt_library}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  prompt_library_pgdata:
